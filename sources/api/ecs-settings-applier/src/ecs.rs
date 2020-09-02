@@ -45,6 +45,9 @@ struct ECSConfig {
 
     #[serde(rename = "OverrideAWSLogsExecutionRole")]
     override_awslogs_execution_role: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    spot_instance_draining_enabled: Option<bool>,
 }
 
 // Returning a Result from main makes it print a Debug representation of the error, but with Snafu
@@ -90,6 +93,7 @@ fn run() -> Result<()> {
         // Always supported with Docker newer than v17.11.0
         // See https://github.com/docker/engine/commit/c7cc9d67590dd11343336c121e3629924a9894e9
         override_awslogs_execution_role: true,
+        spot_instance_draining_enabled: ecs.enable_spot_instance_draining,
         ..Default::default()
     };
     if let Some(os) = settings.os {
